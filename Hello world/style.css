@@ -1,0 +1,33 @@
+.header {
+    color:rgb(0, 180, 135);
+    background:yellowgreen;
+    font-family:Georgia, 'Times New Roman', Times, serif
+}
+
+.content {
+    color:rgb(2, 87, 59);
+    background:yellowgreen;
+    font-size: 55px;
+
+    
+}
+
+.border-red {
+    border: 3px red solid;
+}
+
+a:link {
+    color:red;
+}
+
+a:visited {
+    color:red;
+}
+
+a:hover {
+    color:blue;
+}
+
+a:active {
+    color:brown;
+}
