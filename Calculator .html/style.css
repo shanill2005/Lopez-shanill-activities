@@ -1,0 +1,47 @@
+.calculator {
+        width: 180px;
+        height: fit-content;
+        margin: 50px;
+        padding: 10px;
+        border: 2px solid black;
+        border-radius: 10px;
+        background-color: gray;
+    }
+
+    #valueBox {
+        width: 65%;
+        height: 50px;
+        font-size: 24px;
+        text-align: right;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 15px;
+        background: rgb(241, 21, 21);
+        border: black;
+    }
+    #operatorBox {
+        width: 30%;
+        height: 50px;
+        font-size: 24px;
+        text-align: right;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 20px;
+        background: rgb(247, 108, 108);
+        border: black;
+    }
+
+    .btn{
+        height: 40px;
+        width: 40px;
+        border-radius: 10  px;
+        background: rgb(175, 1, 1);
+
+    }
+    .button{
+        height: 40px;
+        width: 85px;
+        border-circle: 20px;
+        background: rgb(252, 237, 240);
+
+    }
