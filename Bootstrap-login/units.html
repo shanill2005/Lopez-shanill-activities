@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Units - PurpleInv</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --purple-dark: #2e1065;
+            --purple-main: #7c3aed;
+            --purple-light: #ddd6fe;
+            --gray-dark: #1f2937;
+            --gray-card: #111827;
+            --text-white: #f9fafb;
+        }
+        body { background-color: var(--gray-dark); color: var(--text-white); font-family: 'Segoe UI', sans-serif; }
+        
+        #wrapper { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        #sidebar-wrapper { min-width: 250px; background-color: var(--purple-dark); color: white; }
+        .sidebar-heading { padding: 1.5rem; font-size: 1.5rem; font-weight: bold; color: var(--purple-light); text-transform: uppercase; letter-spacing: 1px; }
+        .list-group-item { background-color: transparent; color: var(--purple-light); border: none; padding: 1rem 1.5rem; }
+        .list-group-item:hover { background-color: var(--purple-main); color: white; }
+        .list-group-item.active { background-color: var(--purple-main); color: white; font-weight: bold; }
+        
+        /* Content Area */
+        #page-content-wrapper { flex-grow: 1; background-color: var(--gray-card); }
+        .navbar { background-color: var(--purple-dark); border-bottom: 2px solid var(--purple-main); }
+        .navbar-brand { color: var(--purple-light) !important; font-weight: bold; }
+        
+        /* Table Style */
+        .table { color: var(--text-white) !important; background-color: var(--gray-dark); }
+        .table-dark { background-color: var(--purple-dark) !important; color: var(--purple-light); }
+        .table-bordered { border-color: #374151; }
+        
+        /* Form & Buttons */
+        .form-control { background-color: var(--gray-dark); border: 1px solid #374151; color: var(--text-white); }
+        .form-control:focus { background-color: var(--gray-dark); color: var(--text-white); border-color: var(--purple-main); box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.25); }
+        .btn-success { background-color: var(--purple-main); border-color: var(--purple-main); color: white; font-weight: bold; }
+        .btn-success:hover { background-color: #6d28d9; border-color: #6d28d9; }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <div class="border-end" id="sidebar-wrapper">
+            <div class="sidebar-heading border-bottom">INVENTORY</div>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action" href="dashboard.html">📊 Dashboard</a>
+                <a class="list-group-item list-group-item-action" href="items.html">📦 Items</a>
+                <a class="list-group-item list-group-item-action" href="categories.html">🏷️ Categories</a>
+                <a class="list-group-item list-group-item-action active" href="units.html">📏 Units</a>
+            </div>
+        </div>
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1">Units</span>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3 text-white">👤 Admin</span>
+                        <a href="login.html" class="btn btn-outline-light btn-sm">Logout</a>
+                    </div>
+                </div>
+            </nav>
+            <div class="container-fluid p-4">
+                <div class="row mb-3">
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search units..." onkeyup="searchUnits()">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-success w-100" onclick="addUnit()">Add Unit</button>
+                    </div>
+                </div>
+                <table class="table table-bordered shadow">
+                    <thead class="table-dark">
+                        <tr><th>ID</th><th>Unit Name</th><th>Symbol</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="unitTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadUnits);
+        function logActivity(description) {
+            let activities = JSON.parse(localStorage.getItem('inventoryActivities')) || [];
+            activities.push({ description: description, date: new Date().toLocaleString() });
+            localStorage.setItem('inventoryActivities', JSON.stringify(activities));
+        }
+        function getUnits() { return JSON.parse(localStorage.getItem('inventoryUnits')) || []; }
+        function saveUnits(units) { localStorage.setItem('inventoryUnits', JSON.stringify(units)); }
+        function loadUnits() {
+            let units = getUnits();
+            let tableBody = document.getElementById('unitTableBody');
+            tableBody.innerHTML = "";
+            units.forEach((unit, index) => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${unit.name}</td>
+                        <td>${unit.symbol}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editUnit(${index})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteUnit(${index})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        function addUnit() {
+            let unitName = prompt("Enter Unit Name (e.g., Kilogram):");
+            if(unitName) {
+                let unitSymbol = prompt("Enter Unit Symbol (e.g., kg):");
+                if(unitSymbol) {
+                    let units = getUnits();
+                    units.push({ name: unitName, symbol: unitSymbol });
+                    saveUnits(units);
+                    logActivity(`Added unit: ${unitName} (${unitSymbol})`);
+                    loadUnits();
+                }
+            }
+        }
+        function editUnit(index) {
+            let units = getUnits();
+            let unit = units[index];
+            let newName = prompt("Edit Unit Name:", unit.name);
+            if(newName) {
+                let newSymbol = prompt("Edit Unit Symbol:", unit.symbol);
+                if(newSymbol) {
+                    let oldName = unit.name;
+                    unit.name = newName;
+                    unit.symbol = newSymbol;
+                    saveUnits(units);
+                    logActivity(`Edited unit: ${oldName} to ${newName} (${newSymbol})`);
+                    loadUnits();
+                }
+            }
+        }
+        function deleteUnit(index) {
+            let units = getUnits();
+            if(confirm(`Are you sure you want to delete ${units[index].name}?`)) {
+                logActivity(`Deleted unit: ${units[index].name}`);
+                units.splice(index, 1);
+                saveUnits(units);
+                loadUnits();
+            }
+        }
+        function searchUnits() {
+            let filter = document.getElementById("searchInput").value.toLowerCase();
+            let rows = document.getElementById("unitTableBody").getElementsByTagName("tr");
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].style.display = rows[i].textContent.toLowerCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    </script>
+</body>
+</html>
